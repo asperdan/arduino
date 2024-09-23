@@ -8,6 +8,35 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h> 
 #include <ESP8266WebServer.h>
+#include <BluetoothSerial.h>
+
+BluetoothSerial SerialBT;
+
+void setup() {
+  Serial.begin(115200);
+  SerialBT.begin("ESP32_Device"); // Nome do dispositivo Bluetooth
+  Serial.println("O dispositivo Bluetooth está pronto!");
+}
+
+void loop() {
+  if (SerialBT.available()) {
+    String message = SerialBT.readString();
+    Serial.print("Recebido: ");
+    Serial.println(message);
+   
+    // Enviando uma resposta
+    SerialBT.println("Mensagem recebida!");
+  }
+
+  // Enviar uma mensagem se houver dados no Serial Monitor
+  if (Serial.available()) {
+    String message = Serial.readString();
+    SerialBT.println(message);
+    Serial.println("Mensagem enviada via Bluetooth!");
+  }
+
+  delay(100);
+}
 
 String command;             //String to store app command state.
 int speedCar = 800;         // 400 - 1023.
